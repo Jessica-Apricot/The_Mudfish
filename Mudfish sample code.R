@@ -153,28 +153,27 @@ datz[which(datz$adjustedpval<0.05),]
 
 
 
-###to combine files to binary
+###to combine files to binary presence/absence
 # Load libraries
-library(readxl)   # to read Excel files
 library(dplyr)
 library(tidyr)
 library(stringr)
 
-# Set the folder with your spreadsheets
-data_folder <- "path/to/your/folder"
+# Set the folder with your CSV files
+data_folder <- "/Users/jessdarnley/Library/CloudStorage/OneDrive-UniversityofOtago/Honours\ 2025/Lamprey/The_Mudfish/"
 
-# List all Excel files in the folder
-files <- list.files(data_folder, pattern = "\\.xlsx$", full.names = TRUE)
+# List all CSV files in the folder
+files <- list.files(data_folder, pattern = "\\.csv$", full.names = TRUE)
 
 # Function to read each file and return a dataframe with taxa + location
 read_location <- function(file) {
-  df <- read_excel(file)
+  df <- read.csv(file, stringsAsFactors = FALSE)
   
   # Assume first column is taxa names
   taxa_col <- names(df)[1]
   
   # Get location name from file (remove folder + extension)
-  location <- str_remove(basename(file), "\\.xlsx$")
+  location <- str_remove(basename(file), "\\.csv$")
   
   # Create dataframe with taxa and presence (1)
   data.frame(Taxa = df[[taxa_col]], 
