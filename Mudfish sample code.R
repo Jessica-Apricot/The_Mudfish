@@ -11,16 +11,18 @@ library(vegan)
 sample_data = read.csv("presence_absence_matrix.csv")
 # Remove first column (assumed taxa names or IDs) this is a test
 
-dat <- sample_data[,-1]
+dat <- sample_data[-1,-1]
+
 
 # Transpose data so rows = sites, columns = taxa
 dat <- t(dat)
 colnames(dat) <- sample_data$Taxa
 
+
 # Convert to data frame for easier manipulation
 datfull <- as.data.frame(dat)
 #Add forestcover vector
-datfull$forestcover <- c(rep("Forested", 15), rep("Reforested", 15))
+datfull$P_A <- c("Absent", "Absent", "Present", "Present","Absent","Present", "Present", "Present", "Present", "Absent", "Absent", "Present")
 
 # Add site names as a column
 datfull$site <- rownames(datfull)
@@ -162,7 +164,7 @@ library(tidyr)
 library(stringr)
 
 # Set the folder with your CSV files
-data_folder <- "/Users/jessdarnley/Library/CloudStorage/OneDrive-UniversityofOtago/Honours\ 2025/Lamprey/The_Mudfish/"
+data_folder <- "/The_Mudfish/"
 
 # List all CSV files in the folder
 files <- list.files(data_folder, pattern = "\\.csv$", full.names = TRUE)
