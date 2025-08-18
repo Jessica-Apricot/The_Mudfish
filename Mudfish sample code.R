@@ -49,7 +49,7 @@ hist(Bsor, breaks = 30, main = "Histogram of Sorensen distances")
 # Principal Coordinates Analysis (PCoA)
 pcoa <- pcoa(Bsor)
 
-forestcover <- c(rep("Forested", 15), rep("Reforested", 15))
+P_A <- c("Absent", "Absent", "Present", "Present","Absent","Present", "Present", "Present", "Present", "Absent", "Absent", "Present")
 
 # Create data frame for plotting PCoA results
 
@@ -58,7 +58,7 @@ datpcoa <- data.frame(
   p2 = pcoa$vectors[, 2],
   p3 = pcoa$vectors[, 3],
   p4 = pcoa$vectors[, 4],
-  forestcover = forestcover
+  P_A = P_A
 )
 
 datpcoa$label <- rownames(datpcoa)  # Add labels for sites
@@ -66,13 +66,13 @@ datpcoa$label <- rownames(datpcoa)  # Add labels for sites
 #PCoA plot with labels
 
 ggplot(datpcoa, aes(x = p1, y = p2)) +
-  geom_point(aes(fill = forestcover), shape = 21, size = 6) +
+  geom_point(aes(fill = P_A), shape = 21, size = 6) +
   geom_text(aes(label = label), vjust = -1, size = 3) +
   theme_classic() +
   labs(x = "PCoA 1", y = "PCoA 2", fill = "") +
   scale_fill_manual(
-    labels = c("Forested", "Reforested"),
-    values = c("Forested" = "forestgreen", "Reforested" = "goldenrod")
+    labels = c("Present", "Absent"),
+    values = c("Present" = "salmon", "Absent" = "darkorchid")
   ) +
   theme(
     text = element_text(size = 12),
@@ -80,9 +80,9 @@ ggplot(datpcoa, aes(x = p1, y = p2)) +
     axis.text.x = element_text(colour = "black")
   )
 
-# PERMANOVA test for differences between forestcover groups
+# PERMANOVA test for differences between P_A groups
 
-permanova_result <- adonis2(Bsor ~ forestcover, data = datpcoa, permutations = 9999)
+permanova_result <- adonis2(Bsor ~ P_A, data = datpcoa, permutations = 9999)
 
 print(permanova_result)
 
