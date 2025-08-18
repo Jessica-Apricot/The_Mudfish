@@ -7,13 +7,15 @@ library(ape)
 library(ggplot2)
 library(vegan)
 
+
+sample_data = read.csv("presence_absence_matrix.csv")
 # Remove first column (assumed taxa names or IDs) this is a test
 
-dat <- Sample_data[,-1]
+dat <- sample_data[,-1]
 
 # Transpose data so rows = sites, columns = taxa
 dat <- t(dat)
-colnames(dat) <- Sample_data$Taxa
+colnames(dat) <- sample_data$Taxa
 
 # Convert to data frame for easier manipulation
 datfull <- as.data.frame(dat)
