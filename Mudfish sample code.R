@@ -183,6 +183,7 @@ read_location <- function(file) {
 }
 
 # Read all files
+
 all_data <- lapply(files, read_location) %>% bind_rows()
 
 # Spread into presence/absence matrix
