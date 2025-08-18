@@ -1,5 +1,5 @@
 #Packages
-install.packages(c("betapart", "ade4", "labdsv", "ape", "ggplot2", "vegan"))
+##########install.packages(c("betapart", "ade4", "labdsv", "ape", "ggplot2", "vegan"))
 library(betapart)
 library(ade4)
 library(labdsv)
@@ -7,7 +7,7 @@ library(ape)
 library(ggplot2)
 library(vegan)
 
-# Remove first column (assumed taxa names or IDs)
+# Remove first column (assumed taxa names or IDs) this is a test
 
 dat <- Sample_data[,-1]
 
@@ -101,7 +101,7 @@ for(i in 1:nrow(dat2)){
   50
   dat2$occurreforest[i]=sum(dat2[i,16:30]) } #Adjust this based on the number of you have of each category##
 
-  dim(dat2)
+dim(dat2)
 
 datz=dat2[,31:32]
 
@@ -113,17 +113,17 @@ rownames(datz) = data$Taxa
 
 datz=datz[which(datz$totaloccurrence>5),] **#May need to lower this number if you don't have many sites##**
   
-#p-value vector
-
-datz$pval=rep(NA,nrow(datz))
+  #p-value vector
+  
+  datz$pval=rep(NA,nrow(datz))
 
 #Fisher’s exact test
 
 for(i in 1:nrow(datz)){
   
   test=fisher.test(matrix(c(datz$occurforest[i], 15-datz$occurforest[i], #Adjust this based on the number of you have of each category##**
-                              
-  datz$occurreforest[i], 15-datz$occurreforest[i]), ncol=2)) **#Adjust this based on the number of you have of each category##**
+                            
+ datz$occurreforest[i], 15-datz$occurreforest[i]), ncol=2)) **#Adjust this based on the number of you have of each category##**
     
     datz$pval[i]=test$p.value
     
@@ -148,3 +148,49 @@ length(which(datz$adjustedpval<0.05))
 
 datz[which(datz$adjustedpval<0.05),]
 
+
+
+
+
+
+###to combine files to binary presence/absence
+# Load libraries
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+# Set the folder with your CSV files
+data_folder <- "/Users/jessdarnley/Library/CloudStorage/OneDrive-UniversityofOtago/Honours\ 2025/Lamprey/The_Mudfish/"
+
+# List all CSV files in the folder
+files <- list.files(data_folder, pattern = "\\.csv$", full.names = TRUE)
+
+# Function to read each file and return a dataframe with taxa + location
+read_location <- function(file) {
+  df <- read.csv(file, stringsAsFactors = FALSE)
+  
+  # Assume first column is taxa names
+  taxa_col <- names(df)[1]
+  
+  # Get location name from file (remove folder + extension)
+  location <- str_remove(basename(file), [/.csv$]\\.csv$)
+  
+  # Create dataframe with taxa and presence (1)
+  data.frame(Taxa = df[[taxa_col]],
+             Location = location,
+             Presence = 1)
+}
+
+# Read all files
+all_data <- lapply(files, read_location) %>% bind_rows()
+
+# Spread into presence/absence matrix
+presence_absence <- all_data %>%
+  pivot_wider(names_from = Location, values_from = Presence, values_fill = 0) %>%
+  arrange(Taxa)
+
+# View result
+print(presence_absence)
+
+# Save to CSV
+write.csv(presence_absence, "presence_absence_matrix.csv", row.names = FALSE)
