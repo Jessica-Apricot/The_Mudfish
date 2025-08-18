@@ -148,3 +148,50 @@ length(which(datz$adjustedpval<0.05))
 
 datz[which(datz$adjustedpval<0.05),]
 
+
+
+
+
+
+###to combine files to binary
+# Load libraries
+library(readxl)   # to read Excel files
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+# Set the folder with your spreadsheets
+data_folder <- "path/to/your/folder"
+
+# List all Excel files in the folder
+files <- list.files(data_folder, pattern = "\\.xlsx$", full.names = TRUE)
+
+# Function to read each file and return a dataframe with taxa + location
+read_location <- function(file) {
+  df <- read_excel(file)
+  
+  # Assume first column is taxa names
+  taxa_col <- names(df)[1]
+  
+  # Get location name from file (remove folder + extension)
+  location <- str_remove(basename(file), "\\.xlsx$")
+  
+  # Create dataframe with taxa and presence (1)
+  data.frame(Taxa = df[[taxa_col]], 
+             Location = location,
+             Presence = 1)
+}
+
+# Read all files
+all_data <- lapply(files, read_location) %>% bind_rows()
+
+# Spread into presence/absence matrix
+presence_absence <- all_data %>%
+  pivot_wider(names_from = Location, values_from = Presence, values_fill = 0) %>%
+  arrange(Taxa)
+
+# View result
+print(presence_absence)
+
+# Save to CSV
+write.csv(presence_absence, "presence_absence_matrix.csv", row.names = FALSE)
