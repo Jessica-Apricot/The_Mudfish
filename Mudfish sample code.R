@@ -92,7 +92,7 @@ print(permanova_result)
 
 ### Testing for species specific shifts ###
 
-dat2=Sample_data[,-1]
+dat2=sample_data[-1,-1]
 
 #no. forested and deforested sites in which each taxa occurs
 
@@ -100,22 +100,31 @@ dat2$occurforest=rep(NA,nrow(dat2))
 
 dat2$occurreforest=rep(NA,nrow(dat2))
 
-for(i in 1:nrow(dat2)){
-  dat2$occurforest[i]=sum(dat2[i,1:15])  #Adjust this based on the number of you have of each category##
-  50
-  dat2$occurreforest[i]=sum(dat2[i,16:30]) } #Adjust this based on the number of you have of each category##
+#for(i in 1:nrow(dat2)){
+  #dat2$occurforest[i]=sum(dat2[i,1:15])  #Adjust this based on the number of you have of each category##
+ # 50
+  #dat2$occurreforest[i]=sum(dat2[i,16:30]) } #Adjust this based on the number of you have of each category##
 
+# Identify columns based on name ending
+forest_cols <- grep("P$", names(dat2))   # columns ending in "P"
+reforest_cols <- grep("A$", names(dat2)) # columns ending in "A"
+
+# Sum across rows for each group
+dat2$occurforest   <- rowSums(dat2[, forest_cols])
+dat2$occurreforest <- rowSums(dat2[, reforest_cols])
+
+#
 dim(dat2)
 
-datz=dat2[,31:32]
+datz=dat2[,13:14]
 
 datz$totaloccurrence=datz$occurforest+datz$occurreforest
 
 str(datz)
 
-rownames(datz) = data$Taxa
+rownames(datz) = datz$Taxa
 
-datz=datz[which(datz$totaloccurrence>5),] **#May need to lower this number if you don't have many sites##**
+datz=datz[which(datz$totaloccurrence>2),] #May need to lower this number if you don't have many sites##
   
   #p-value vector
   
@@ -125,9 +134,9 @@ datz=datz[which(datz$totaloccurrence>5),] **#May need to lower this number if yo
 
 for(i in 1:nrow(datz)){
   
-  test=fisher.test(matrix(c(datz$occurforest[i], 15-datz$occurforest[i], #Adjust this based on the number of you have of each category##**
+  test=fisher.test(matrix(c(datz$occurforest[i], 15-datz$occurforest[i], #Adjust this based on the number of you have of each category##
                             
- datz$occurreforest[i], 15-datz$occurreforest[i]), ncol=2)) **#Adjust this based on the number of you have of each category##**
+ datz$occurreforest[i], 15-datz$occurreforest[i]), ncol=2)) #Adjust this based on the number of you have of each category##
     
     datz$pval[i]=test$p.value
     
