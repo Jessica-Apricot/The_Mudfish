@@ -67,7 +67,7 @@ datpcoa$label <- rownames(datpcoa)  # Add labels for sites
 
 ggplot(datpcoa, aes(x = p1, y = p2)) +
   geom_point(aes(fill = P_A), shape = 21, size = 6) +
-  geom_text(aes(label = label), vjust = -1, size = 3) +
+  geom_text(aes(label = label), vjust = -1, size = 3)
   theme_classic() +
   labs(x = "PCoA 1", y = "PCoA 2", fill = "") +
   scale_fill_manual(
@@ -78,7 +78,29 @@ ggplot(datpcoa, aes(x = p1, y = p2)) +
     text = element_text(size = 12),
     axis.text.y = element_text(colour = "black"),
     axis.text.x = element_text(colour = "black")
-  )
+  ) 
+
+##add elipses around each group with the PCoA
+  ggplot(datpcoa, aes(x = p1, y = p2)) +
+    geom_point(aes(fill = P_A), shape = 21, size = 6) +
+    geom_text(aes(label = label), vjust = -1, size = 3) +
+    stat_ellipse(aes(group = P_A, color = P_A), type = "t", linetype = 2) +
+    theme_classic() +
+    labs(x = "PCoA 1", y = "PCoA 2", fill = "", color = "") +
+    scale_fill_manual(
+      labels = c("Present", "Absent"),
+      values = c("Present" = "salmon", "Absent" = "darkorchid")
+    ) +
+    scale_color_manual(
+      labels = c("Present", "Absent"),
+      values = c("Present" = "salmon", "Absent" = "darkorchid")
+    ) +
+    theme(
+      text = element_text(size = 12),
+      axis.text.y = element_text(colour = "black"),
+      axis.text.x = element_text(colour = "black")
+    )
+
 
 # PERMANOVA test for differences between P_A groups
 
