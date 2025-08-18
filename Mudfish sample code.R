@@ -103,7 +103,7 @@ for(i in 1:nrow(dat2)){
   50
   dat2$occurreforest[i]=sum(dat2[i,16:30]) } #Adjust this based on the number of you have of each category##
 
-  dim(dat2)
+dim(dat2)
 
 datz=dat2[,31:32]
 
@@ -115,17 +115,17 @@ rownames(datz) = data$Taxa
 
 datz=datz[which(datz$totaloccurrence>5),] **#May need to lower this number if you don't have many sites##**
   
-#p-value vector
-
-datz$pval=rep(NA,nrow(datz))
+  #p-value vector
+  
+  datz$pval=rep(NA,nrow(datz))
 
 #Fisher’s exact test
 
 for(i in 1:nrow(datz)){
   
   test=fisher.test(matrix(c(datz$occurforest[i], 15-datz$occurforest[i], #Adjust this based on the number of you have of each category##**
-                              
-  datz$occurreforest[i], 15-datz$occurreforest[i]), ncol=2)) **#Adjust this based on the number of you have of each category##**
+                            
+ datz$occurreforest[i], 15-datz$occurreforest[i]), ncol=2)) **#Adjust this based on the number of you have of each category##**
     
     datz$pval[i]=test$p.value
     
@@ -175,10 +175,10 @@ read_location <- function(file) {
   taxa_col <- names(df)[1]
   
   # Get location name from file (remove folder + extension)
-  location <- str_remove(basename(file), "\\.csv$")
+  location <- str_remove(basename(file), [/.csv$]\\.csv$)
   
   # Create dataframe with taxa and presence (1)
-  data.frame(Taxa = df[[taxa_col]], 
+  data.frame(Taxa = df[[taxa_col]],
              Location = location,
              Presence = 1)
 }
