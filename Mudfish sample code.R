@@ -198,3 +198,91 @@ print(presence_absence)
 
 # Save to CSV
 write.csv(presence_absence, "presence_absence_matrix.csv", row.names = FALSE)
+
+
+
+
+####species specific code
+**#Testing for species-specific shifts**
+  
+  
+  
+  
+  
+  data=read.csv("C:/Users/mccgr18p/OneDrive - University of Otago/Desktop/GENE312 eDNA/Sample data.csv")
+
+str(data)
+
+dat=data\[,-1]
+
+str(dat)
+
+
+
+
+
+\#no. forested and deforested sites in which each taxa occurs
+
+dat$occurforest=rep(NA,nrow(dat))
+
+dat$occurreforest=rep(NA,nrow(dat))
+
+for(i in 1:nrow(dat)){
+  
+  dat$occurforest\[i]=sum(dat\[i,1:15])   **#Adjust this based on the number of you have of each category##**
+    
+    50
+  
+  dat$occurreforest\[i]=sum(dat\[i,16:30]) **#Adjust this based on the number of you have of each category##**
+    
+}
+
+dim(dat)
+
+datz=dat\[,31:32]
+
+datz$totaloccurrence=datz$occurforest+datz$occurreforest
+
+str(datz)
+
+rownames(datz)=data$Taxa
+
+datz=datz\[which(datz$totaloccurrence>5),] **#May need to lower this number if you don't have many sites##**
+  
+  \#p-value vector
+
+datz$pval=rep(NA,nrow(datz))
+
+\#Fisher’s exact test
+
+for(i in 1:nrow(datz)){
+  
+  test=fisher.test(matrix(c(datz$occurforest\[i], 15-datz$occurforest\[i], **#Adjust this based on the number of you have of each category##**
+                              
+                              datz$occurreforest\[i], 15-datz$occurreforest\[i]), ncol=2)) **#Adjust this based on the number of you have of each category##**
+    
+    datz$pval\[i]=test$p.value
+    
+}
+
+\#number of significant taxa (unadjusted p-value)
+
+length(which(datz$pval<0.1))
+
+datz\[which(datz$pval<0.1),]
+
+
+
+\#Benjamini-Hochberg correction
+
+datz$adjustedpval=p.adjust(datz$pval, method="fdr")
+
+\#number of significant taxa after p-value adjustment for multiple comparisons
+
+length(which(datz$adjustedpval<0.05))
+
+
+
+datz\[which(datz$adjustedpval<0.05),]
+
+
