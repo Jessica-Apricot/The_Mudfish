@@ -1,5 +1,5 @@
 #Packages
-install.packages(c("betapart", "ade4", "labdsv", "ape", "ggplot2", "vegan"))
+##########install.packages(c("betapart", "ade4", "labdsv", "ape", "ggplot2", "vegan"))
 library(betapart)
 library(ade4)
 library(labdsv)
@@ -7,7 +7,7 @@ library(ape)
 library(ggplot2)
 library(vegan)
 
-# Remove first column (assumed taxa names or IDs)
+# Remove first column (assumed taxa names or IDs) this is a test
 
 dat <- Sample_data[,-1]
 
