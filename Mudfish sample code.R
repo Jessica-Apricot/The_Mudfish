@@ -8,6 +8,55 @@ library(ggplot2)
 library(vegan)
 
 
+### 1
+###to combine files to binary presence/absence
+# Load libraries
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+# Set the folder with your CSV files
+data_folder <- "/Users/jessdarnley/Library/CloudStorage/OneDrive-UniversityofOtago/Honours\ 2025/Lamprey/The_Mudfish/"
+
+# List all CSV files in the folder
+files <- list.files(data_folder, pattern = "\\.csv$", full.names = TRUE)
+
+# Function to read each file and return a dataframe with taxa + location
+read_location <- function(file) {
+  df <- read.csv(file, stringsAsFactors = FALSE)
+  
+  # Assume first column is taxa names
+  taxa_col <- names(df)[1]
+  
+  # Get location name from file (remove folder + extension)
+  location <- str_remove(basename(file), "\\.csv$")
+  
+  # Create dataframe with taxa and presence (1)
+  data.frame(Taxa = df[[taxa_col]],
+             Location = location,
+             Presence = 1)
+}
+
+# Read all files
+all_data <- lapply(files, read_location) %>% bind_rows()
+
+# Spread into presence/absence matrix
+presence_absence <- all_data %>%
+  pivot_wider(names_from = Location, values_from = Presence, values_fill = 0) %>%
+  arrange(Taxa)
+
+# View result
+print(presence_absence)
+dim(presence_absence)
+
+# Save to CSV
+write.csv(presence_absence, "presence_absence_matrix.csv", row.names = FALSE)
+
+
+
+
+### 2
+##PCoA plot code
 sample_data = read.csv("presence_absence_matrix.csv")
 # Remove first column (assumed taxa names or IDs) this is a test
 
@@ -22,7 +71,7 @@ colnames(dat) <- sample_data$Taxa
 # Convert to data frame for easier manipulation
 datfull <- as.data.frame(dat)
 #Add forestcover vector
-datfull$P_A <- c("Absent", "Absent", "Present", "Present","Absent","Present", "Present", "Present", "Present", "Absent", "Absent", "Present")
+datfull$P_A <- c("Absent", "Absent", "Present", "Present", "Absent","Present", "Absent", "Absent", "Present", "Absent", "Present", "Present", "Absent", "Present", "Absent", "Present")
 
 # Add site names as a column
 datfull$site <- rownames(datfull)
@@ -49,7 +98,7 @@ hist(Bsor, breaks = 30, main = "Histogram of Sorensen distances")
 # Principal Coordinates Analysis (PCoA)
 pcoa <- pcoa(Bsor)
 
-P_A <- c("Absent", "Absent", "Present", "Present","Absent","Present", "Present", "Present", "Present", "Absent", "Absent", "Present")
+P_A <- c("Absent", "Absent", "Present", "Present", "Absent","Present", "Absent", "Absent", "Present", "Absent", "Present", "Present", "Absent", "Present", "Absent", "Present")
 
 # Create data frame for plotting PCoA results
 
@@ -111,7 +160,7 @@ print(permanova_result)
 
 
 
-
+### 3
 ### Testing for species specific shifts ###
 
 dat2=sample_data[-1,-1]
@@ -138,7 +187,7 @@ dat2$absent <- rowSums(dat2[, absent_cols])
 #
 dim(dat2)
 
-datz=dat2[,13:14]
+datz=dat2[,17:18]
 
 datz$totaloccurrence=datz$present+datz$absent
 
@@ -156,9 +205,9 @@ datz=datz[which(datz$totaloccurrence>2),] #May need to lower this number if you 
 
 for(i in 1:nrow(datz)){
   
-  test=fisher.test(matrix(c(datz$present[i], 6-datz$present[i], #Adjust this based on the number of you have of each category##
+  test=fisher.test(matrix(c(datz$present[i], 8-datz$present[i], #Adjust this based on the number of you have of each category##
                             
- datz$absent[i], 6-datz$absent[i]), ncol=2)) #Adjust this based on the number of you have of each category##
+ datz$absent[i], 8-datz$absent[i]), ncol=2)) #Adjust this based on the number of you have of each category##
     
     datz$pval[i]=test$p.value
     
@@ -184,50 +233,5 @@ length(which(datz$adjustedpval<0.05))
 datz[which(datz$adjustedpval<0.05),]
 
 
-
-
-
-
-###to combine files to binary presence/absence
-# Load libraries
-library(dplyr)
-library(tidyr)
-library(stringr)
-
-# Set the folder with your CSV files
-data_folder <- "/The_Mudfish/"
-
-# List all CSV files in the folder
-files <- list.files(data_folder, pattern = "\\.csv$", full.names = TRUE)
-
-# Function to read each file and return a dataframe with taxa + location
-read_location <- function(file) {
-  df <- read.csv(file, stringsAsFactors = FALSE)
-  
-  # Assume first column is taxa names
-  taxa_col <- names(df)[1]
-  
-  # Get location name from file (remove folder + extension)
-  location <- str_remove(basename(file), [/.csv$]\\.csv$)
-  
-  # Create dataframe with taxa and presence (1)
-  data.frame(Taxa = df[[taxa_col]],
-             Location = location,
-             Presence = 1)
-}
-
-# Read all files
-all_data <- lapply(files, read_location) %>% bind_rows()
-
-# Spread into presence/absence matrix
-presence_absence <- all_data %>%
-  pivot_wider(names_from = Location, values_from = Presence, values_fill = 0) %>%
-  arrange(Taxa)
-
-# View result
-print(presence_absence)
-
-# Save to CSV
-write.csv(presence_absence, "presence_absence_matrix.csv", row.names = FALSE)
 
 
