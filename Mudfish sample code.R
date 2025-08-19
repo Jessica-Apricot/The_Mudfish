@@ -16,7 +16,7 @@ library(tidyr)
 library(stringr)
 
 # Set the folder with your CSV files
-data_folder <- "/Users/jessdarnley/Library/CloudStorage/OneDrive-UniversityofOtago/Honours\ 2025/Lamprey/The_Mudfish/"
+#data_folder <- "/Users/jessdarnley/Library/CloudStorage/OneDrive-UniversityofOtago/Honours\ 2025/Lamprey/The_Mudfish/"
 
 data_folder <- "."
 
