@@ -18,8 +18,11 @@ library(stringr)
 # Set the folder with your CSV files
 data_folder <- "/Users/jessdarnley/Library/CloudStorage/OneDrive-UniversityofOtago/Honours\ 2025/Lamprey/The_Mudfish/"
 
+data_folder <- "."
+
 # List all CSV files in the folder
 files <- list.files(data_folder, pattern = "\\.csv$", full.names = TRUE)
+
 
 # Function to read each file and return a dataframe with taxa + location
 read_location <- function(file) {
@@ -60,12 +63,16 @@ write.csv(presence_absence, "presence_absence_matrix.csv", row.names = FALSE)
 sample_data = read.csv("presence_absence_matrix.csv")
 # Remove first column (assumed taxa names or IDs) this is a test
 
-dat <- sample_data[-1,-1]
+sample_data <- sample_data[-1, ]
+taxa <- sample_data[[1]]
+
+dat <- sample_data[,-1]
 
 
 # Transpose data so rows = sites, columns = taxa
 dat <- t(dat)
-colnames(dat) <- sample_data$Taxa
+colnames(dat) <- taxa
+
 
 
 # Convert to data frame for easier manipulation
@@ -116,7 +123,7 @@ datpcoa$label <- rownames(datpcoa)  # Add labels for sites
 
 ggplot(datpcoa, aes(x = p1, y = p2)) +
   geom_point(aes(fill = P_A), shape = 21, size = 6) +
-  geom_text(aes(label = label), vjust = -1, size = 3)
+  geom_text(aes(label = label), vjust = -1, size = 3) +
   theme_classic() +
   labs(x = "PCoA 1", y = "PCoA 2", fill = "") +
   scale_fill_manual(
