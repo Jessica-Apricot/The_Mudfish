@@ -127,7 +127,7 @@ ggplot(datpcoa, aes(x = p1, y = p2)) +
   theme_classic() +
   labs(x = "PCoA 1", y = "PCoA 2", fill = "") +
   scale_fill_manual(
-    labels = c("Present", "Absent"),
+    labels = c("Absent", "Present"),
     values = c("Present" = "salmon", "Absent" = "darkorchid")
   ) +
   theme(
@@ -144,11 +144,11 @@ ggplot(datpcoa, aes(x = p1, y = p2)) +
     theme_classic() +
     labs(x = "PCoA 1", y = "PCoA 2", fill = "", color = "") +
     scale_fill_manual(
-      labels = c("Present", "Absent"),
+      labels = c("Absent", "Present"),
       values = c("Present" = "salmon", "Absent" = "darkorchid")
     ) +
     scale_color_manual(
-      labels = c("Present", "Absent"),
+      labels = c("Absent", "Present"),
       values = c("Present" = "salmon", "Absent" = "darkorchid")
     ) +
     theme(
