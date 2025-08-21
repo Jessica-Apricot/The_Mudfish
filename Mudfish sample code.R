@@ -77,6 +77,7 @@ colnames(dat) <- taxa
 
 # Convert to data frame for easier manipulation
 datfull <- as.data.frame(dat)
+datfull <- datfull %>% filter(!(rownames(datfull) %in% "presence_absence_matrix"))
 #Add forestcover vector
 datfull$P_A <- c("Absent", "Absent", "Present", "Present", "Absent","Present", "Absent", "Absent", "Present", "Absent", "Present", "Present", "Absent", "Present", "Absent", "Present")
 
@@ -171,6 +172,7 @@ print(permanova_result)
 ### Testing for species specific shifts ###
 
 dat2=sample_data[-1,-1]
+dat2=dat2[,-14]
 
 #no. forested and deforested sites in which each taxa occurs
 
@@ -222,9 +224,9 @@ for(i in 1:nrow(datz)){
 
 #number of significant taxa (unadjusted p-value)
 
-length(which(datz$pval<0.1))
+length(which(datz$pval<0.05))
 
-datz[which(datz$pval<0.1),]
+datz[which(datz$pval<0.05),]
 
 
 
@@ -239,6 +241,12 @@ length(which(datz$adjustedpval<0.05))
 
 datz[which(datz$adjustedpval<0.05),]
 
+print()
 
+##print sig (non adjusted) taxa
+sig_rows <- c(45, 148, 170, 257)
+sig_taxa <- presence_absence$Taxa[sig_rows]
+
+print(sig_taxa)
 
 
